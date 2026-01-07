@@ -1,1 +1,125 @@
-<text>Hello, World!</text>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Text File - GitHub Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        textarea, #output {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #005fa3;
+        }
+        .file-selector {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Load Text File in JavaScript</h1>
+        
+        <div>
+            <h3>Method 1: Predefined File</h3>
+            <button onclick="loadPredefinedFile()">Load data.txt</button>
+            <div id="output1"></div>
+        </div>
+        
+        <div>
+            <h3>Method 2: Select File from Computer</h3>
+            <input type="file" id="fileInput" accept=".txt,.json,.csv" class="file-selector">
+            <div id="output2"></div>
+        </div>
+        
+        <div>
+            <h3>Method 3: Load Multiple Files</h3>
+            <button onclick="loadMultipleFiles()">Load data1.txt and data2.txt</button>
+            <div id="output3"></div>
+        </div>
+    </div>
+
+    <script>
+        // Method 1: Load predefined file from server
+        async function loadPredefinedFile() {
+            try {
+                const response = await fetch('words.txt');
+                if (!response.ok) throw new Error('File not found');
+                const text = await response.text();
+                document.getElementById('output1').innerHTML = 
+                    `<pre>${text}</pre>`;
+            } catch (error) {
+                document.getElementById('output1').innerHTML = 
+                    `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+
+        // Method 2: Load file from user's computer
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                document.getElementById('output2').innerHTML = 
+                    `<h4>${file.name}:</h4><pre>${content}</pre>`;
+            };
+            reader.onerror = function() {
+                document.getElementById('output2').innerHTML = 
+                    '<p style="color: red;">Error reading file</p>';
+            };
+            reader.readAsText(file);
+        });
+
+        // Method 3: Load multiple files from server
+        async function loadMultipleFiles() {
+            const files = ['data1.txt', 'data2.txt', 'data3.txt'];
+            const output = document.getElementById('output3');
+            output.innerHTML = '<p>Loading...</p>';
+            
+            let results = '';
+            
+            for (const file of files) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        const text = await response.text();
+                        results += `<h4>${file}:</h4><pre>${text}</pre><hr>`;
+                    } else {
+                        results += `<p style="color: orange;">${file}: Not found</p>`;
+                    }
+                } catch (error) {
+                    results += `<p style="color: red;">${file}: Error loading</p>`;
+                }
+            }
+            
+            output.innerHTML = results || '<p>No files loaded</p>';
+        }
+    </script>
+</body>
+</html>
