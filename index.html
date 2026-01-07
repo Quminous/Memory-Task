@@ -1,38 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Experiment</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<link rel="stylesheet" href="style.css">
+
     <div id="app">
         <!-- Introduction Screen -->
         <div id="intro-screen" class="screen">
             <h1>Memory Experiment</h1>
             <div class="instructions">
-                <h2>Instructions:</h2>
+                <h2>Instructions</h2>
                 <ol>
                     <li>You will see 50 random words for 1 minute</li>
-                    <li>Then play Snake game for 3 minutes</li>
-                    <li>Finally, recall and type as many words as you remember</li>
+                    <li>Then play Snake for 3 minutes</li>
+                    <li>Recall all of the words you remember and send me a message with your total!</li>
                 </ol>
-                <p><strong>Note:</strong> Try to remember as many words as possible!</p>
             </div>
             <button id="start-btn" class="btn">Start Experiment</button>
         </div>
 
         <!-- Word Display Screen -->
         <div id="word-display-screen" class="screen hidden">
-            <h2>Memorize these words (60 seconds)</h2>
+            <h2>Memorize these words</h2>
             <div id="timer-display">Time remaining: 60 seconds</div>
             <div id="word-grid" class="word-grid"></div>
         </div>
 
         <!-- Snake Game Screen -->
         <div id="snake-game-screen" class="screen hidden">
-            <h2>Play Snake Game (180 seconds)</h2>
+            <h2>Play Snake</h2>
             <div id="game-timer-display">Game time: 180 seconds</div>
             <canvas id="game-canvas" width="600" height="400"></canvas>
             <div class="game-controls">
@@ -44,12 +36,14 @@
         <!-- Word Recall Screen -->
         <div id="word-recall-screen" class="screen hidden">
             <h2>Recall the Words</h2>
-            <p>Enter each word you remember (one per line):</p>
+            <p>Enter each word you remember (one per line)</p>
+            <p>You can click check-words whenever you want to check if your words are correct</p>
+            <p>Click done when you are finished to get a count of how many words you remembered!</p>
             <textarea id="word-input" rows="15" placeholder="Type each word on a new line..."></textarea>
             <div id="recall-feedback"></div>
             <div class="button-group">
                 <button id="check-words-btn" class="btn">Check Words</button>
-                <button id="done-btn" class="btn hidden">Done</button>
+                <button id="done-btn" class="btn">Done</button>
             </div>
         </div>
 
@@ -67,6 +61,3 @@
     </div>
 
     <script src="script.js"></script>
-    <script src="snake-game.js"></script>
-</body>
-</html>
