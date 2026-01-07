@@ -327,7 +327,7 @@ function startWordDisplay() {
     });
     
     // Start timer
-    timeLeft = 1;
+    timeLeft = 60;
     updateTimerDisplay();
     showScreen('wordDisplay');
     
@@ -335,7 +335,7 @@ function startWordDisplay() {
         timeLeft--;
         updateTimerDisplay();
         
-        if (timeLeft <= 60) {
+        if (timeLeft <= 0) {
             clearInterval(timerInterval);
             startSnakeGame();
         }
@@ -412,11 +412,6 @@ function checkWords() {
             rememberedWords.add(word);
         }
     });
-    
-    // Show done button if we have correct words
-    if (rememberedWords.size > 0) {
-        elements.doneBtn.classList.remove('hidden');
-    }
 }
 
 function showResults() {
