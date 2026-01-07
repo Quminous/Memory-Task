@@ -3,141 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto-load words.txt</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        #loading {
-            color: #666;
-            font-style: italic;
-        }
-        #word-list {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 5px;
-            min-height: 100px;
-        }
-        .word-item {
-            display: inline-block;
-            margin: 5px;
-            padding: 5px 10px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-        }
-        .stats {
-            margin-top: 20px;
-            padding: 10px;
-            background: #e8f4f8;
-            border-left: 4px solid #2196F3;
-        }
-        .error {
-            color: #d32f2f;
-            background: #ffebee;
-            padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #d32f2f;
-        }
-    </style>
+    <title>Memory Experiment</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Word List Loader</h1>
-    
-    <div id="status">
-        <p id="loading">Loading words.txt...</p>
+    <div id="app">
+        <!-- Introduction Screen -->
+        <div id="intro-screen" class="screen">
+            <h1>Memory Experiment</h1>
+            <div class="instructions">
+                <h2>Instructions:</h2>
+                <ol>
+                    <li>You will see 50 random words for 1 minute</li>
+                    <li>Then play Snake game for 3 minutes</li>
+                    <li>Finally, recall and type as many words as you remember</li>
+                </ol>
+                <p><strong>Note:</strong> Try to remember as many words as possible!</p>
+            </div>
+            <button id="start-btn" class="btn">Start Experiment</button>
+        </div>
+
+        <!-- Word Display Screen -->
+        <div id="word-display-screen" class="screen hidden">
+            <h2>Memorize these words (60 seconds)</h2>
+            <div id="timer-display">Time remaining: 60 seconds</div>
+            <div id="word-grid" class="word-grid"></div>
+        </div>
+
+        <!-- Snake Game Screen -->
+        <div id="snake-game-screen" class="screen hidden">
+            <h2>Play Snake Game (180 seconds)</h2>
+            <div id="game-timer-display">Game time: 180 seconds</div>
+            <canvas id="game-canvas" width="600" height="400"></canvas>
+            <div class="game-controls">
+                <p>Use Arrow Keys or WASD to control the snake</p>
+                <p>Score: <span id="score">0</span></p>
+            </div>
+        </div>
+
+        <!-- Word Recall Screen -->
+        <div id="word-recall-screen" class="screen hidden">
+            <h2>Recall the Words</h2>
+            <p>Enter each word you remember (one per line):</p>
+            <textarea id="word-input" rows="15" placeholder="Type each word on a new line..."></textarea>
+            <div id="recall-feedback"></div>
+            <div class="button-group">
+                <button id="check-words-btn" class="btn">Check Words</button>
+                <button id="done-btn" class="btn hidden">Done</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen hidden">
+            <h2>Experiment Complete!</h2>
+            <div id="results-summary">
+                <h3>Your Results:</h3>
+                <p>Total words remembered: <span id="total-remembered">0</span> out of 50</p>
+                <p>Words you remembered correctly:</p>
+                <div id="correct-words-list"></div>
+            </div>
+            <button id="restart-btn" class="btn">Restart Experiment</button>
+        </div>
     </div>
-    
-    <div id="word-list"></div>
-    
-    <div class="stats" id="stats"></div>
 
-    <script>
-        // Main function to load words.txt on page load
-        async function loadWordsFile() {
-            const status = document.getElementById('status');
-            const wordList = document.getElementById('word-list');
-            const stats = document.getElementById('stats');
-            
-            try {
-                // Fetch the words.txt file
-                const response = await fetch('words.txt');
-                
-                if (!response.ok) {
-                    throw new Error(`File not found (HTTP ${response.status})`);
-                }
-                
-                const text = await response.text();
-                
-                // Update status
-                document.getElementById('loading').textContent = 'Words loaded successfully!';
-                
-                // Process and display the words
-                displayWords(text, wordList, stats);
-                
-            } catch (error) {
-                // Display error message
-                status.innerHTML = `
-                    <div class="error">
-                        <strong>Error loading words.txt:</strong><br>
-                        ${error.message}<br><br>
-                        <small>Make sure you have a "words.txt" file in your repository.</small>
-                    </div>
-                `;
-                console.error('Load error:', error);
-            }
-        }
-
-        function displayWords(text, container, statsContainer) {
-            // Split by lines and filter out empty lines
-            const lines = text.split('\n')
-                .map(line => line.trim())
-                .filter(line => line.length > 0);
-            
-            // Display words
-            if (lines.length === 0) {
-                container.innerHTML = '<p>No words found in the file.</p>';
-                return;
-            }
-            
-            // Create word elements
-            container.innerHTML = '<h3>Loaded Words:</h3>';
-            lines.forEach(word => {
-                const wordElement = document.createElement('span');
-                wordElement.className = 'word-item';
-                wordElement.textContent = word;
-                container.appendChild(wordElement);
-            });
-            
-            // Display statistics
-            const uniqueWords = [...new Set(lines)];
-            const wordCount = lines.length;
-            const uniqueCount = uniqueWords.length;
-            
-            statsContainer.innerHTML = `
-                <h3>Statistics:</h3>
-                <p>Total words: ${wordCount}</p>
-                <p>Unique words: ${uniqueCount}</p>
-                <p>Duplicates: ${wordCount - uniqueCount}</p>
-                ${wordCount > 50 ? '<p><em>Showing first 50 words only</em></p>' : ''}
-            `;
-            
-            // If there are too many words, limit display
-            if (wordCount > 50) {
-                const allWordElements = container.querySelectorAll('.word-item');
-                for (let i = 50; i < allWordElements.length; i++) {
-                    allWordElements[i].style.display = 'none';
-                }
-            }
-        }
-
-        // Load the words.txt file as soon as the page loads
-        window.addEventListener('DOMContentLoaded', loadWordsFile);
-    </script>
+    <script src="script.js"></script>
+    <script src="snake-game.js"></script>
 </body>
 </html>
