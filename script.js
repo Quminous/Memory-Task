@@ -46,7 +46,7 @@ let displayedWords = [];
 let timerInterval;
 let gameTimerInterval;
 let timeLeft = 60;
-let gameTimeLeft = 180;
+let gameTimeLeft = 120;
 let rememberedWords = new Set();
 let snakeGame;
 
@@ -353,7 +353,7 @@ function updateTimerDisplay() {
 }
 
 function startSnakeGame() {
-    gameTimeLeft = 180;
+    gameTimeLeft = 120;
     updateGameTimerDisplay();
     showScreen('snakeGame');
     
